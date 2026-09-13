@@ -1,7 +1,7 @@
 """NormSpecGen: pick an image and generate a normal map and a specular map for it."""
 import os
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, ttk, simpledialog
 
 from PIL import Image, ImageTk
 
@@ -110,15 +110,42 @@ class NormSpecGenApp(tk.Tk):
             return
 
         base, _ = os.path.splitext(self.source_path)
-        source_path = f"{base}_source.png"
-        normal_path = f"{base}_normal.png"
-        specular_path = f"{base}_specular.png"
+        default_name = os.path.basename(base)
+        
+        # Show rename dialog
+        new_name = simpledialog.askstring(
+            "Rename Files",
+            f"Enter the base filename (without extension):\n\nFiles will be saved as:\n  <name>_source.png\n  <name>_normal.png\n  <name>_specular.png",
+            initialvalue=default_name
+        )
+        
+        if new_name is None:  # User cancelled
+            return
+        
+        if not new_name.strip():
+            messagebox.showwarning("Invalid name", "Filename cannot be empty.")
+            return
+        
+        # Sanitize the filename
+        new_name = new_name.strip()
+        invalid_chars = r'<>:"|?*'
+        if any(char in new_name for char in invalid_chars):
+            messagebox.showerror("Invalid name", f"Filename cannot contain: {invalid_chars}")
+            return
+        
+        # Build new paths in the same directory as the source
+        directory = os.path.dirname(self.source_path)
+        source_path = os.path.join(directory, f"{new_name}_source.png")
+        normal_path = os.path.join(directory, f"{new_name}_normal.png")
+        specular_path = os.path.join(directory, f"{new_name}_specular.png")
 
-        self.normalized_image.save(source_path, format="PNG")
-        self.normal_image.save(normal_path)
-        self.specular_image.save(specular_path)
-
-        messagebox.showinfo("Saved", f"Saved:\n{source_path}\n{normal_path}\n{specular_path}")
+        try:
+            self.normalized_image.save(source_path, format="PNG")
+            self.normal_image.save(normal_path)
+            self.specular_image.save(specular_path)
+            messagebox.showinfo("Saved", f"Saved:\n{source_path}\n{normal_path}\n{specular_path}")
+        except Exception as exc:
+            messagebox.showerror("Error", f"Could not save files:\n{exc}")
 
     def _show_preview(self, key, image):
         label = self.preview_labels[key]
