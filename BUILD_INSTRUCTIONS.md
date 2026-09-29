@@ -41,6 +41,19 @@ python -m py_compile main.py map_generator.py
 
 ## Build the Windows Executable
 
+Before each release, update `__version__` in `version.py`. This is the single
+source of the version displayed in the application window title and is included
+automatically in the executable. Rebuild the executable after changing it.
+Use `MAJOR.MINOR.PATCH`: increment PATCH for fixes, MINOR for new features,
+and MAJOR for incompatible changes. The initial version is `0.1.0`.
+
+Run the automated tests before building (no additional test dependencies or GUI
+window required):
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
 The build script uses `.venv` when available and otherwise falls back to the `python` command. It requires PyInstaller.
 
 Install PyInstaller into the active environment if needed:

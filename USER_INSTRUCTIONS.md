@@ -34,14 +34,18 @@ This can happen with new apps that are not digitally signed.
    - **Specular contrast**: how much the shiny/dull areas stand out.
    - **Invert specular**: check this if you want bright areas to be less shiny instead of more shiny.
 4. Click **Generate Maps** to preview the normal map and specular map next to your original image.
-5. Click **Save Maps...** to save three PNG files next to your original file, named:
+5. Click **Save Maps...** to choose an output folder and base filename. Review the
+   three paths, then click **Save**. The folder defaults to your original file's folder:
    - `yourfile_source.png`
    - `yourfile_normal.png`
    - `yourfile_specular.png`
 
 The source reference is always saved as PNG, even when the selected image was a JPEG,
 TGA, TIFF, or another format. Existing files with these names are overwritten when
-you save again.
+you save again only after you confirm replacement.
+
+After changing an option, the status message marks previews as outdated. Click
+**Generate Maps** again to enable saving with the updated settings.
 
 ## Tips
 
