@@ -64,7 +64,29 @@ class NormSpecGenApp(tk.Tk):
         self.status_var = tk.StringVar(value="Select an image to begin.")
         ttk.Label(self, textvariable=self.status_var, padding=(10, 4), wraplength=650).pack(fill=tk.X)
 
-        self.preview_tabs = ttk.Notebook(self)
+        # Use a theme-independent tab border so Windows also displays the
+        # selected background color instead of overriding it with native styling.
+        style = ttk.Style(self)
+        if "Preview.tab" not in style.element_names():
+            style.element_create("Preview.tab", "from", "clam", "Notebook.tab")
+        style.layout("Preview.TNotebook.Tab", [
+            ("Preview.tab", {"sticky": "nswe", "children": [
+                ("Notebook.padding", {"side": "top", "sticky": "nswe", "children": [
+                    ("Notebook.focus", {"side": "top", "sticky": "nswe", "children": [
+                        ("Notebook.label", {"side": "top", "sticky": ""})
+                    ]})
+                ]})
+            ]})
+        ])
+        style.configure("Preview.TNotebook.Tab", padding=(24, 12),
+                        font=("Segoe UI", 11, "bold"), background="#e2e8f0",
+                        foreground="#253449")
+        style.map("Preview.TNotebook.Tab",
+                  background=[("selected", "#1759a6"), ("active", "#cbdcf0")],
+                  foreground=[("selected", "#ffffff"), ("active", "#172b46")])
+        ttk.Label(self, text="Preview mode", font=("Segoe UI", 10, "bold"),
+                  padding=(12, 4)).pack(anchor="w")
+        self.preview_tabs = ttk.Notebook(self, style="Preview.TNotebook")
         self.preview_tabs.pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
         previews = ttk.Frame(self.preview_tabs, padding=10)
         self.preview_tabs.add(previews, text="Maps")
